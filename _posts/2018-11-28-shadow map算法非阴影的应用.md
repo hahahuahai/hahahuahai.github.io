@@ -13,7 +13,7 @@ tags:
 
 &emsp;&emsp;有必要先说明一下什么是虚实融合。开头放张图好像比较符合江湖规矩...
 
-![虚实融合gif](https://github.com/hahahuahai/hahahuahai.github.io/blob/master/images/posts/2018-11-28-shadow%20map%E7%AE%97%E6%B3%95%E9%9D%9E%E9%98%B4%E5%BD%B1%E7%9A%84%E5%BA%94%E7%94%A8/videofusion.gif)
+![虚实融合gif](/images/posts/shadowmap/videofusion.gif)
 
 
 &emsp;&emsp;上图就是3D模型与实时视频虚实融合的最终效果gif。所谓的虚实融合就是**虚拟的3D模型数据**（对现实场景建模得来）和**现实的视频**（与模型数据相同地点的摄像头视频数据）融合。
@@ -22,12 +22,12 @@ tags:
 
 1. 3D模型数据。如下图。
 
-![3D模型数据](https://github.com/hahahuahai/hahahuahai.github.io/blob/master/images/posts/2018-11-28-shadow%20map%E7%AE%97%E6%B3%95%E9%9D%9E%E9%98%B4%E5%BD%B1%E7%9A%84%E5%BA%94%E7%94%A8/backgroud.jpg)
+![3D模型数据](/images/posts/shadowmap/backgroud.jpg)
 
 2. 摄像头的标定参数(为了得到摄像头的视图矩阵和透视投影矩阵)。
 3. 摄像头的视频。
 
-![摄像头的视频](https://github.com/hahahuahai/hahahuahai.github.io/blob/master/images/posts/2018-11-28-shadow%20map%E7%AE%97%E6%B3%95%E9%9D%9E%E9%98%B4%E5%BD%B1%E7%9A%84%E5%BA%94%E7%94%A8/video.jpg)
+![摄像头的视频](/images/posts/shadowmap/video.jpg)
 
 # 虚实融合的核心原理解释
 
@@ -39,7 +39,7 @@ tags:
 
 &emsp;&emsp;Shadow Map算法计算阴影的基本原理是：从光源可以看到场景中所有的被光照亮的表面。所有的隐藏（不可见）元素都处于阴影区域。
 
-![shadow map](https://github.com/hahahuahai/hahahuahai.github.io/blob/master/images/posts/2018-11-28-shadow%20map%E7%AE%97%E6%B3%95%E9%9D%9E%E9%98%B4%E5%BD%B1%E7%9A%84%E5%BA%94%E7%94%A8/shadowmap.jpg)
+![shadow map](/images/posts/shadowmap/shadowmap.jpg)
 
 &emsp;&emsp;为了判断表面是否对于光源是可见的，需要分三步：
 1. 从光源的位置对场景进行渲染，得到一张深度图p1。其中的每一个元素都记录了第一个可见表面的深度值（与光源的距离）。
