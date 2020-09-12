@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      ASE示例学习——XRay
+title:      AmplifyShaderEditor——XRay
 subtitle:   
 date:       2020-09-10
 author:     huahai
