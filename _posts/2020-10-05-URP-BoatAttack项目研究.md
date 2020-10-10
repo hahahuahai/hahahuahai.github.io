@@ -29,7 +29,15 @@ tags:
 - 需要注意的是：1.书上的Y和Z坐标，与这里的Z和Y坐标对应。2.计算vWaves时这里没有像书中用frac。
 - 网上的一篇可以参考的[文章](https://mtnphil.wordpress.com/2011/10/18/wind-animations-for-vegetation/)和对应的[视频](https://www.youtube.com/watch?v=Mb5QVoqFkKo)。这篇文章相当于在详细解释GPU GEMS里面的动画部分的内容，说的比较详细。
 - 知乎上的一个[问题](https://www.zhihu.com/question/50202986?utm_source=cowlevel)也提到了这个。
-- （动画部分没有完全看明白，以后再看）
+- 植被也做了LOD，距离近的是非billboard版本，距离远的是billboard版本。用的都是同一个shader。
+- （动画部分细节，以后再看）（着色部分似乎也是根据GPU Gems 3那文章上做的，具体以后再详细看）
+
+# 房屋的渲染分析
+
+![](/images/posts/Unity3d/boatattack4.png)
+
+- 这里的房屋渲染有个特别之处：会根据时间是白天还是晚上进行调整。晚上会让房屋的窗户亮起来，模拟房屋开灯的效果。挺有意思的。
+- 窗户亮的效果是通过把全局的时间（DayNightController.cs里面的time，time发生变化的时候就会实时同步到shaderd的_NightFade参数）作为参数引入，然后通过Emission自发光来做。
 
 # 云的渲染分析
 
