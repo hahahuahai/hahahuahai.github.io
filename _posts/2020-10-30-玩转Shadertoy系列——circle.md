@@ -17,7 +17,7 @@ tags:
 
 太阳
 
-![](/images/posts/Unity3d/shadertoy_sun1.png)
+![](/images/posts/Shadertoy/shadertoy_sun1.png)
 
 # 代码
 
