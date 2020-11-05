@@ -55,11 +55,10 @@ float remap(float a, float b, float c, float d, float t)
     
 }
 
-
+// 用于将uv坐标进行缩放。注意：rect是一个自定义的矩形范围，xy表示矩形的横纵坐标最小的坐标值（一般是左下角），zw表示矩形的横纵坐标最大的坐标值（一般是右上角），而不是矩形的width和height。之所以自定义一个这样的矩形范围，是为了方便各个子模块（眼睛、嘴巴和眉毛）里面的绘制，因为在这个自定义矩形里坐标范围是0——1的。
 vec2 within(vec2 uv, vec4 rect)
 {
-    return (uv-rect.xy)/(rect.zw - rect.xy);
-    
+    return (uv-rect.xy)/(rect.zw - rect.xy);    
 }
 
 
