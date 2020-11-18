@@ -246,13 +246,15 @@ float sdHead(vec3 p) {
     vec2 mp = p.yz-vec2(3.76+S(-.71, -.14, p.z)*(p.z+.5)*.2, -.71); 
     float mouth = length(mp)-4.24;
     d += S(.03,.0,abs(mouth))*S(.59,.0, p.z)*.03;
-    
+    // 表面
    	d += GetHeadScales(p, ep, mp.xyy, mouth);
-    
+    //让眼睛凸出来
     d = min(d, eye);
     
+    // 鼻子
     float nostril = length(p.zy-vec2(-1.9-p.x*p.x, .15))-.05;
     d = smax(d, -nostril,.05);
+    
     return d;
 }
 
@@ -492,4 +494,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
 - [shadertoy项目地址](https://www.shadertoy.com/view/wlVSDK)
 - [Function Smoothing Explained!](https://www.youtube.com/watch?v=YJ4iyff7zbk)：作者说实现上面这个效果，就是各种 min smoothing和max smoothing的效果。这个视频就是介绍这些的。
+- [Smooth Min Explained](http://www.viniciusgraciano.com/blog/smin/)：这篇文章对iq的文章进一步说明，里面的smooth min的推理过程很好，要看明白。
+- [smooth minimum](https://www.iquilezles.org/www/articles/smin/smin.htm)：这篇文章是smooth min的最原始的文章，其他文章都是根据这个写的。我们用到的是多项式插值（polynomial smooth min）。
+- [平滑轨迹插值方法之多项式插值（附代码）](https://zhuanlan.zhihu.com/p/269230598)
 
