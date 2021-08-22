@@ -207,7 +207,16 @@ for (TFieldIterator<FProperty> It(SubStruct); It; ++It) // 遍历struct下的UPr
 
 写入：
 
-TODO
+```C++
+if (FStructProperty* TargetStructProperty = CastField<FStructProperty>(TargetProperty))
+{
+    void* SubObject = GetUStructFromMessage(&SubMessage);
+    void* SubStructValue = TargetStructProperty->ContainerPtrToValuePtr<void>(ResultObject, 0);// 数据来源
+    TargetStructProperty->CopyCompleteValue(SubStructValue, SubObject); // 将数据来源拷贝到数据目的地
+}
+```
+
+
 
 ### 3.12 FArrayProperty
 
@@ -221,6 +230,8 @@ TArray<int32>* TargetInt32s = TargetProperty->ContainerPtrToValuePtr<TArray<int3
 写入：
 
 TArray的写入操作需要借助FScriptArrayHelper。
+
+1. 元素类型非UStruct的情况：
 
 ```c++
 FArrayProperty* TargetArrayProperty = Cast<FArrayProperty>(TargetProperty); // TargetProperty为UProperty*格式的对象
@@ -252,6 +263,37 @@ case CPPTYPE_BOOL:
 default: ;
 }
 ```
+
+2. 元素类型为UStruct的情况：不能使用上面的方法（ArrayHelper.MoveAssign之后的数据是错的）。要借助FScriptArrayHelper中的EmptyAndAddUninitializedValues方法先创建出空的UStruct元素，然后利用FStructProperty中的CopyCompleteValue方法将UStruct的值拷贝进来。
+
+```C++
+void* ArrayValuePtr = TargetArrayProperty->ContainerPtrToValuePtr<void>(TestMainObject);
+FScriptArrayHelper ArrayHelper(TargetArrayProperty, ArrayValuePtr); //创建Array操作的辅助函数
+if (FStructProperty* TargetStructProperty = CastField<FStructProperty>(TargetArrayProperty->Inner)) // 判断是否为Struct属性
+{
+    TArray<FSubStruct*> TargetArray; // 需要写入的数据源
+    // 将两个用于测试的UStruct数据写入数据源
+    FSubStruct* TestStruct1 = new FSubStruct();
+    TestStruct1->SubStructInt32 = 51;
+    FSubStruct* TestStruct2 = new FSubStruct();
+    TestStruct2->SubStructInt32 = 52;
+    TargetArray.Add(TestStruct1);
+    TargetArray.Add(TestStruct2);
+	// 根据数据源的个数，在数据目的地创建出对应数量的未初始化的UStruct
+    ArrayHelper.EmptyAndAddUninitializedValues(TargetArray.Num());
+    for (int32 i = 0; i < ArrayHelper.Num(); i++) // 遍历并进行初始化
+    {
+        void* SingleData = ArrayHelper.GetRawPtr(i);
+        SingleData = TargetArray[i];
+        // 将数据源的数据拷贝到数据目的地
+        TargetStructProperty->CopyCompleteValue(ArrayHelper.GetRawPtr(i), TargetArray[i]);
+    }
+}
+```
+
+
+
+
 
 ### 3.13 FMapProperty
 
