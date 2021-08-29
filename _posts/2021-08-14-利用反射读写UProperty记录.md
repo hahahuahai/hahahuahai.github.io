@@ -329,6 +329,8 @@ FMapProperty* TargetMapProperty = Cast<FMapProperty>(TargetProperty); // TargetP
 
 TMap的写入操作需要借助FScriptMapHelper。
 
+1. 元素类型非UStruct的情况：
+
 ```c++
     FMapProperty* TargetMapProperty = Cast<FMapProperty>(TargetProperty);
       void* MapValuePtr = TargetMapProperty->ContainerPtrToValuePtr<void*>(ResultObject, 0);
@@ -408,6 +410,47 @@ TMap的写入操作需要借助FScriptMapHelper。
       default: ;
       }
 ```
+
+2. 元素类型为UStruct的情况：
+
+参考FArrayProperty的写入。利用FScriptMapHelper中的AddUninitializedValue函数与FStructProperty中的CopyCompleteValue相互配合就能写入。
+
+```c++
+void* MapValuePtr = TargetMapProperty->ContainerPtrToValuePtr<void*>(TargetMainObject, 0);
+
+FScriptMapHelper MapHelper(TargetMapProperty, MapValuePtr);
+
+if (FIntProperty* TargetInt32Property = CastField<FIntProperty>(TargetMapProperty->KeyProp))
+{
+    if (FStructProperty* TargetStructProperty = CastField<FStructProperty>(TargetMapProperty->ValueProp))
+    {
+        TMap<int32, UStruct*> TargetMap;
+        FSubTestStruct* TestStruct1 = new FSubTestStruct();
+        TestStruct1->StructInt32 = 11;
+        FSubTestStruct* TestStruct2 = new FSubTestStruct();
+        TestStruct2->StructInt32 = 22;
+        FSubTestStruct* TestStruct3 = new FSubTestStruct();
+        TestStruct3->StructInt32 = 33;
+        TargetMap.Add(1, (UStruct*)TestStruct1);
+        TargetMap.Add(2, (UStruct*)TestStruct2);
+        TargetMap.Add(3, (UStruct*)TestStruct3);
+
+        for (TTuple<int, UStruct*> SingleTargetMap : TargetMap)
+        {
+            int32 index = MapHelper.AddUninitializedValue();
+            TargetInt32Property->CopyCompleteValue(MapHelper.GetKeyPtr(index), &SingleTargetMap.Key);
+            TargetStructProperty->CopyCompleteValue(MapHelper.GetValuePtr(index), SingleTargetMap.Value);
+            void* ResultInt = MapHelper.GetKeyPtr(index);
+            void* ResultStruct = MapHelper.GetValuePtr(index);
+            FSubTestStruct* ResultTestStruct = (FSubTestStruct*)ResultStruct;
+        }
+
+    }
+}
+
+```
+
+
 
 ## 四、参考资料
 
